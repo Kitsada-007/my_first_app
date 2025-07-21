@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -9,35 +11,62 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(title: Text('Login pages')),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
-        child: Container(
-          color: Colors.amber,
-          child: Column(
-            children: [
-              SizedBox(
-                child: Container(color: Colors.blue, width: 100, height: 100),
-              ),
-              Row(
+
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () => login('กดนะ', 'กดนะ'),
+              child: Image.asset('assets/images/logo.png'),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    child: Container(
-                      color: Colors.green,
-                      width: 200,
-                      height: 100,
+                  Text("หมายเลขโทรศัพท์"),
+                  TextField(
+                    keyboardType: TextInputType.phone,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1),
+                      ),
                     ),
                   ),
-                  SizedBox(
-                    child: Container(
-                      color: Colors.pink,
-                      width: 100,
-                      height: 100,
+                  Text("รหัสผ่าน"),
+                  TextField(
+                    keyboardType: TextInputType.phone,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1),
+                      ),
                     ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text('ลงทะเบียนใหม่'),
+                      ),
+                      FilledButton(
+                        onPressed: () => login('admin', '1234'),
+                        child: const Text('เข้าสู้ระบบ'),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  void login(String user, String password) {
+    log(user + " " + password);
   }
 }
