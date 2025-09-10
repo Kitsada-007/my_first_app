@@ -1,11 +1,18 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:my_first_app/config/config.dart';
+import 'package:my_first_app/model/request/customers_login_post_req.dart';
+import 'package:my_first_app/model/response/customers_login_post_res.dart';
 import 'package:my_first_app/pages/ShowTripPage.dart';
+
 import 'package:my_first_app/pages/registerPage.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  final mes;
+  LoginPage({super.key, this.mes});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -17,13 +24,23 @@ class _LoginPageState extends State<LoginPage> {
   var phoneCtl = TextEditingController();
   var passWordCtl = TextEditingController();
   // TextEditingController phoneCtl = TextEditingController();
+
+  String url = '';
+
+  @override
+  void initState() {
+    super.initState();
+    Configuration.getConfig().then((config) {
+      url = config['apiEndpoint'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Login pages')),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
-
         child: Column(
           children: [
             InkWell(
@@ -33,12 +50,12 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.only(right: 20, left: 20),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("หมายเลขโทรศัพท์"),
                   TextField(
                     controller: phoneCtl,
                     keyboardType: TextInputType.phone,
-                    obscureText: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderSide: BorderSide(width: 1),
@@ -80,17 +97,33 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login() {
-    // ignore: unrelated_type_equality_checks
-    //if (phoneCtl.text == '0812345678' && passWordCtl.text == '1234') {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Showtrippage()),
+    var data = {"phone": "0817399999", "password": "1111"};
+    CustomerLoginPostRequest req = CustomerLoginPostRequest(
+      phone: phoneCtl.text,
+      password: passWordCtl.text,
     );
-    //} else {
-    //   setState(() {
-    //     text = 'รหัสผ่านไม่ถูกต้อง';
-    //   });
-    // }
+    http
+        .post(
+          Uri.parse("$url/customers/login"),
+          headers: {"Content-Type": "application/json; charset=utf-8"},
+          body: customerLoginPostRequestToJson(req),
+        )
+        .then((value) {
+          CustomerLoginPostResponse customerLoginPostResponse =
+              customerLoginPostResponseFromJson(value.body);
+          log(customerLoginPostResponse.customer.fullname);
+          log(customerLoginPostResponse.customer.email);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  Showtrippage(userId: customerLoginPostResponse.customer.idx),
+            ),
+          );
+        })
+        .catchError((error) {
+          log('Error $error');
+        });
   }
 
   void register() {
