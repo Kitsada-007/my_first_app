@@ -21,9 +21,3 @@ A Flutter project for trip management that includes login, register, profile, tr
 
 ---
 
-##  Getting Started
-
-###  Clone repository
-```bash
-git clone https://github.com/your-username/my_first_app.git](https://github.com/Kitsada-007/my_first_app.git
-cd my_first_app
